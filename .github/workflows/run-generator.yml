@@ -1,0 +1,45 @@
+name: Solana Vanity Generator CI
+
+on:
+  push:
+    branches:
+      - main  # Runs when code is pushed to the main branch
+  pull_request:
+    branches:
+      - main  # Runs on PRs to main
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Linux runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Pulls latest code
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'  # Use Python 3.10 (adjust if needed)
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip  # Caches installed packages
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run the Vanity Address Generator
+        run: python solana_wallet_generator.py  # Modify if needed
+
+      - name: Upload generated wallets
+        uses: actions/upload-artifact@v3
+        with:
+          name: generated-wallets
+          path: generated_wallets/  # Change if output directory differs
