@@ -22,7 +22,7 @@ pip install solders
 ### 2. Clone the Repository
 ```sh
 git clone https://github.com/manojos/Solana-Vanity-Address-Generator.git
-cd solana-vanity-generator 
+cd Solana-Vanity-Address-Generator
 ```
 
 ### 3. Run the Wallet Generator
