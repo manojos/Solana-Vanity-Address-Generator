@@ -3,43 +3,45 @@ name: Solana Vanity Generator CI
 on:
   push:
     branches:
-      - main  # Runs when code is pushed to the main branch
+      - main
   pull_request:
     branches:
-      - main  # Runs on PRs to main
-  workflow_dispatch:  # Allows manual trigger
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Use latest Ubuntu runner
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # Pulls latest code
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5  # Updated to v5
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'  # Adjust as needed
+          python-version: '3.10'
 
       - name: Cache dependencies
-        uses: actions/cache@v4  # Updated to v4
+        uses: actions/cache@v4
         with:
-          path: ~/.cache/pip  # Cache installed packages
+          path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: |
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "No requirements.txt found, skipping."; fi
+          pip install --upgrade pip
+          pip install base58 solders # Ensure base58 & solders are installed
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run the Vanity Address Generator
-        run: python solana_wallet_generator.py  # Modify if needed
+        run: python solana_wallet_generator.py
 
       - name: Upload generated wallets
-        uses: actions/upload-artifact@v4  # Updated to v4
+        uses: actions/upload-artifact@v4
         with:
           name: generated-wallets
-          path: generated_wallets/  # Change if output directory differs
-          retention-days: 7  # Keep artifacts for 7 days (adjust if needed)
+          path: generated_wallets/
+          retention-days: 7
