@@ -39,7 +39,7 @@ jobs:
         run: python solana_wallet_generator.py  # Modify if needed
 
       - name: Upload generated wallets
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: generated-wallets
           path: generated_wallets/  # Change if output directory differs
